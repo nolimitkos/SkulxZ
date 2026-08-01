@@ -3,57 +3,72 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>H2APK — HTML/URL to APK</title>
+<title>Skulx — HTML/URL to APK</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;700;900&family=Luckiest+Guy&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700;900&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <style>
 *{-webkit-tap-highlight-color:transparent;outline:none;border:none;box-shadow:none;box-sizing:border-box;margin:0;padding:0}
 body{
-  font-family:"Geist Mono","Geist Mono Fallback",ui-monospace,"SF Mono","Fira Code",Menlo,Consolas,monospace;
-  background:#000;color:rgba(255,255,255,0.55);min-height:100vh;
-  line-height:1.6
+  font-family:"Inter","Inter Fallback",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  background:#060606;color:rgba(255,255,255,0.6);min-height:100vh;
+  line-height:1.6;-webkit-font-smoothing:antialiased
 }
-.wrap{max-width:1100px;margin:0 auto;padding:clamp(24px,4vw,64px) clamp(16px,3vw,48px) 80px}
-.hero{text-align:center;margin-bottom:48px}
-.hero h1{font-size:3rem;font-weight:900;line-height:1;color:#fff;margin-bottom:12px}
-.hero p{color:rgba(255,255,255,0.55);font-size:.75rem;font-weight:400}
+.wrap{max-width:620px;margin:0 auto;padding:clamp(24px,4vw,64px) clamp(16px,3vw,48px) 80px}
+.stepper{display:flex;align-items:flex-start;justify-content:center;margin-bottom:44px}
+.step-dot{background:transparent;border:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:8px;font-family:inherit;padding:0}
+.step-num{width:32px;height:32px;border-radius:50%;border:1px solid rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;font-family:"Space Grotesk","Space Grotesk Fallback",sans-serif;font-weight:700;font-size:.8rem;color:rgba(255,255,255,0.35);transition:all .25s}
+.step-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,0.3);font-weight:600;transition:color .25s}
+.step-dot.active .step-num{background:#fff;border-color:#fff;color:#060606}
+.step-dot.active .step-label{color:#fff}
+.step-dot.done .step-num{border-color:rgba(255,255,255,0.6);color:#fff}
+.step-dot.done .step-label{color:rgba(255,255,255,0.6)}
+.step-line{width:clamp(28px,8vw,64px);height:1px;background:rgba(255,255,255,0.16);margin:16px 10px 0}
+.step-panel{display:flex;flex-direction:column}
+.step-nav{display:flex;justify-content:space-between;align-items:center;margin-top:8px}
+.step-btn{padding:11px 22px;border-radius:6px;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;cursor:pointer;font-family:"Space Grotesk","Space Grotesk Fallback",sans-serif;background:#fff;color:#060606;border:1px solid #fff;transition:opacity .2s}
+.step-btn:hover{opacity:.8}
+.step-btn.ghost{background:transparent;color:rgba(255,255,255,0.55);border-color:rgba(255,255,255,0.18)}
+.step-btn.ghost:hover{color:#fff;border-color:rgba(255,255,255,0.4);opacity:1}
+.hero{text-align:center;margin-bottom:56px}
+.hero h1{font-family:"Space Grotesk","Space Grotesk Fallback",sans-serif;font-size:clamp(2.75rem,9vw,4rem);font-weight:700;line-height:.95;letter-spacing:-.03em;color:#fff;margin-bottom:14px}
+.hero p{color:rgba(255,255,255,0.4);font-size:.8rem;font-weight:500;letter-spacing:.01em}
 .section{
-  background:#0d0d0d;border:1px solid rgba(255,255,255,0.08);border-radius:12px;
-  padding:28px;margin-bottom:24px;transition:border-color .3s,box-shadow .3s;
+  background:transparent;border:1px solid rgba(255,255,255,0.14);border-radius:6px;
+  padding:26px 28px;margin-bottom:28px;transition:border-color .25s;
   animation:fadeUp .5s ease both
 }
 .section:nth-child(2){animation-delay:.1s}
 .section:nth-child(3){animation-delay:.15s}
 .section:nth-child(4){animation-delay:.2s}
 .section:nth-child(5){animation-delay:.25s}
-.section:hover{border-color:rgba(255,255,255,0.2);box-shadow:0 0 30px rgba(255,255,255,0.03)}
-.section-title{font-size:.75rem;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,0.55);margin-bottom:18px;font-weight:400}
+.section:hover{border-color:rgba(255,255,255,0.3)}
+.section-title{font-family:"Space Grotesk","Space Grotesk Fallback",sans-serif;font-size:.72rem;text-transform:uppercase;letter-spacing:2px;color:#fff;margin-bottom:20px;font-weight:700}
 .row{display:flex;gap:14px}
 .row>div{flex:1}
 .app-details-grid{display:flex;flex-wrap:wrap;gap:14px;align-items:flex-start}
 .app-details-grid>.version-field{flex:0 0 calc(50% - 7px)}
 .app-details-grid>:not(.version-field):not(.app-icon-area){flex:0 0 calc(50% - 7px)}
 .app-icon-area{flex:1 1 calc(50% - 7px);display:flex;flex-direction:column}
-label{font-size:.75rem;color:rgba(255,255,255,0.55);display:block;margin-bottom:6px;font-weight:400}
+label{font-size:.72rem;color:rgba(255,255,255,0.45);display:block;margin-bottom:7px;font-weight:500;letter-spacing:.01em}
 input,textarea{
-  width:100%;background:#000;border:1px solid rgba(255,255,255,0.08);border-radius:10px;
-  padding:12px 14px;color:rgba(255,255,255,0.8);font-size:.75rem;
-  transition:border-color .25s
+  width:100%;background:#000;border:1px solid rgba(255,255,255,0.14);border-radius:6px;
+  padding:12px 14px;color:#fff;font-size:.8rem;font-family:inherit;
+  transition:border-color .2s
 }
-input:focus,textarea:focus{outline:none;border-color:rgba(255,255,255,0.3);box-shadow:0 0 0 3px rgba(255,255,255,0.06)}
-textarea{min-height:180px;font-family:"Geist Mono","Geist Mono Fallback",ui-monospace,"SF Mono","Fira Code",Menlo,Consolas,monospace;line-height:1.6;font-size:.75rem}
+input:focus,textarea:focus{outline:none;border-color:#fff}
+textarea{min-height:180px;font-family:"JetBrains Mono","JetBrains Mono Fallback",ui-monospace,"SF Mono",Menlo,Consolas,monospace;line-height:1.6;font-size:.72rem}
 .small-area{min-height:80px}
-input[type=url]{font-family:"Geist Mono","Geist Mono Fallback",ui-monospace,"SF Mono","Fira Code",Menlo,Consolas,monospace;font-size:.75rem}
-.mode-tabs{display:flex;gap:8px;margin-bottom:24px;justify-content:center}
+input[type=url]{font-family:"JetBrains Mono","JetBrains Mono Fallback",ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size:.72rem}
+.mode-tabs{display:flex;gap:clamp(16px,4vw,28px);margin-bottom:28px;justify-content:flex-start;border-bottom:1px solid rgba(255,255,255,0.1)}
 .mode-tab{
-  padding:8px 20px;text-align:center;font-size:.75rem;font-weight:400;
-  color:rgba(255,255,255,0.55);cursor:pointer;border-radius:20px;transition:all .25s;
-  border:1px solid rgba(255,255,255,0.06);background:transparent
+  padding:0 2px 14px;text-align:center;font-size:.72rem;font-weight:600;letter-spacing:.03em;
+  text-transform:uppercase;color:rgba(255,255,255,0.35);cursor:pointer;transition:color .2s;
+  border:none;background:transparent;border-bottom:2px solid transparent;margin-bottom:-1px
 }
-.mode-tab.active{background:rgba(255,255,255,0.08);color:#fff;border-color:rgba(255,255,255,0.15)}
-.mode-tab:hover:not(.active){border-color:rgba(255,255,255,0.15);color:rgba(255,255,255,0.7)}
+.mode-tab.active{color:#fff;border-bottom-color:#fff}
+.mode-tab:hover:not(.active){color:rgba(255,255,255,0.7)}
 .hidden{display:none}
 .icon-upload{display:flex;align-items:center;gap:8px}
 .icon-preview{
@@ -107,12 +122,13 @@ input[type=url]{font-family:"Geist Mono","Geist Mono Fallback",ui-monospace,"SF 
 .radio-label input[type=radio]{accent-color:#fff}
 .check-row label{font-size:.75rem;color:rgba(255,255,255,0.55)}
 .build-btn{
-  width:100%;padding:15px;background:#1C1C1E;
-  color:#fff;border:none;border-radius:12px;font-size:.875rem;font-weight:700;
-  cursor:pointer;transition:all .3s;margin-top:4px;
-  font-family:"Geist Mono","Geist Mono Fallback",ui-monospace,"SF Mono","Fira Code",Menlo,Consolas,monospace
+  width:100%;padding:16px;background:#fff;
+  color:#060606;border:none;border-radius:6px;font-size:.8rem;font-weight:700;
+  text-transform:uppercase;letter-spacing:.08em;
+  cursor:pointer;transition:opacity .2s;margin-top:4px;
+  font-family:"Space Grotesk","Space Grotesk Fallback",sans-serif
 }
-.build-btn:hover{opacity:.85}
+.build-btn:hover{opacity:.8}
 .build-btn:disabled{opacity:.35;transform:none;box-shadow:none;cursor:not-allowed}
 #status{
   margin-top:16px;padding:14px 18px;border-radius:10px;font-size:.75rem;
@@ -130,24 +146,24 @@ input[type=url]{font-family:"Geist Mono","Geist Mono Fallback",ui-monospace,"SF 
 .file-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:rgba(255,255,255,0.68)}
 .file-size{flex-shrink:0;color:rgba(255,255,255,0.3);font-size:.65rem}
 .file-remove{width:44px;height:44px;flex-shrink:0;border:0;border-left:1px solid rgba(255,255,255,0.05);background:transparent;color:rgba(255,255,255,0.3);font-size:1.1rem;cursor:pointer;border-radius:0 9px 9px 0;transition:background .2s,color .2s}
-.file-remove:hover,.file-remove:focus-visible{background:rgba(255,95,87,0.1);color:#ff5f57;outline:none}
-#fileList .missing{display:block;padding:5px 2px;color:#ff5f57}
+.file-remove:hover,.file-remove:focus-visible{background:rgba(255,255,255,0.1);color:#fff;outline:none}
+#fileList .missing{display:block;padding:5px 2px;color:rgba(255,255,255,0.7)}
 .pulse-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-.done .pulse-dot{background:#28c840;animation:pulse 2s infinite}
-.building .pulse-dot{background:#7c5cff;animation:pulse 1.2s infinite}
-.failed .pulse-dot{background:#ff5f57}
+.done .pulse-dot{background:#fff;animation:pulse 2s infinite}
+.building .pulse-dot{background:#fff;animation:pulse 1.2s infinite}
+.failed .pulse-dot{background:rgba(255,255,255,0.35)}
 .term-chrome{display:flex;align-items:center;gap:7px;margin-bottom:8px}
 .term-chrome span{width:11px;height:11px;border-radius:50%;flex-shrink:0}
-.term-chrome .tc-r{background:#ff5f57}
-.term-chrome .tc-y{background:#febc2e}
-.term-chrome .tc-g{background:#28c840}
+.term-chrome .tc-r{background:rgba(255,255,255,0.25)}
+.term-chrome .tc-y{background:rgba(255,255,255,0.45)}
+.term-chrome .tc-g{background:rgba(255,255,255,0.65)}
 #logHeader{
   display:none;background:#000;padding:14px 16px 0 16px;
   border:1px solid rgba(255,255,255,0.06);border-bottom:none;
   border-radius:10px 10px 0 0;margin-top:10px
 }
 #log{
-  font-family:"Geist Mono","Geist Mono Fallback",ui-monospace,"SF Mono","Fira Code",Menlo,Consolas,monospace;font-size:.75rem;line-height:1.7;
+  font-family:"JetBrains Mono","JetBrains Mono Fallback",ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size:.72rem;line-height:1.7;
   white-space:pre-wrap;overflow-y:auto;scroll-behavior:smooth;
   background:#000;padding:0 16px 16px 16px;border-radius:0 0 10px 10px;
   display:none;color:#777;border:1px solid rgba(255,255,255,0.06);
@@ -241,7 +257,6 @@ input[type=color]::-webkit-color-swatch{border-radius:6px;border:none}
   .app-details-grid>:not(.version-field):not(.app-icon-area){flex:1 1 calc(33.333% - 10px)}
 }
 @media(min-width:1200px){
-  .wrap{max-width:1200px}
   .section{padding:40px 48px;margin-bottom:32px}
   textarea{min-height:280px}
 }
@@ -265,211 +280,7 @@ input[type=color]::-webkit-color-swatch{border-radius:6px;border:none}
 #previewBar button:hover{border-color:rgba(255,255,255,0.3);color:#fff}
 #previewFrame{flex:1;width:100%;border:none;background:#fff}
 
-/* ========== DONATION OVERLAY ========== */
-#donationOverlay{
-  position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,0.8);
-  display:none;align-items:safe center;justify-content:safe center;
-  padding:clamp(20px,4vw,48px) clamp(12px,3vw,24px);
-  animation:donationFadeIn .3s ease
-}
-#donationOverlay.open{display:flex}
-@keyframes donationFadeIn{from{opacity:0}to{opacity:1}}
-
-#donationOverlay .donation-wrap{
-  width:100%;max-width:480px;position:relative;
-  animation:donationRiseIn .5s cubic-bezier(.22,.61,.36,1) both;
-  border-radius:20px;overflow:hidden;
-  border:1px solid rgba(255,255,255,0.06)
-}
-@keyframes donationRiseIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-
-#donationOverlay .donation-hero{
-  background:linear-gradient(160deg,#e8933a,#a85a1e 70%);
-  padding:36px 24px 28px;text-align:center;
-  color:#fff9ee;overflow:hidden;position:relative
-}
-#donationOverlay .donation-hero::after{
-  content:"";position:absolute;left:50%;bottom:-15px;
-  transform:translateX(-50%);
-  width:140%;height:30px;
-  background:#141210;border-radius:50%
-}
-#donationOverlay .donation-close{
-  position:absolute;top:12px;right:14px;
-  background:rgba(0,0,0,0.2);color:#fff9ee;
-  width:32px;height:32px;border-radius:50%;font-size:1.1rem;
-  cursor:pointer;display:flex;align-items:center;justify-content:center;
-  transition:background .15s;line-height:1;
-  font-family:'Nunito',sans-serif;z-index:2
-}
-#donationOverlay .donation-close:hover{background:rgba(0,0,0,0.35)}
-
-#donationOverlay .donation-mug{
-  width:96px;height:96px;margin:0 auto 10px;
-  filter:drop-shadow(0 6px 10px rgba(0,0,0,0.3))
-}
-@keyframes donationClink{
-  0%,100%{transform:rotate(0deg)}
-  5%{transform:rotate(-8deg)}
-  10%{transform:rotate(6deg)}
-  15%{transform:rotate(0deg)}
-}
-
-#donationOverlay .donation-brand{
-  font-family:'Luckiest Guy',cursive;letter-spacing:1px;
-  font-size:clamp(1.5rem,5vw,1.9rem);
-  text-shadow:0 2px 0 rgba(0,0,0,0.18);line-height:1.1
-}
-#donationOverlay .donation-sub{margin-top:4px;font-weight:700;font-size:.88rem;opacity:.9;font-family:'Nunito',sans-serif}
-
-#donationOverlay .donation-body{
-  background:#141210;border-radius:0 0 20px 20px;
-  padding:clamp(6px,2vw,10px) clamp(20px,5vw,28px) clamp(24px,5vw,28px)
-}
-#donationOverlay .donation-pitch{
-  text-align:center;font-weight:700;color:rgba(255,255,255,0.5);
-  font-size:.85rem;margin:4px 0 20px;line-height:1.6;font-family:'Nunito',sans-serif
-}
-#donationOverlay .donation-tabs{display:flex;gap:6px;margin-bottom:16px;padding:4px;background:rgba(255,255,255,0.03);border-radius:12px}
-#donationOverlay .donation-tab-btn{
-  flex:1;padding:10px 8px;border-radius:9px;background:transparent;
-  font-family:'Nunito',sans-serif;font-weight:800;font-size:.8rem;color:rgba(255,255,255,0.4);
-  cursor:pointer;transition:all .2s ease;min-height:44px
-}
-#donationOverlay .donation-tab-btn.active{background:rgba(107,142,78,0.2);color:#8aad6e}
-#donationOverlay .donation-tab-btn:hover:not(.active){color:rgba(255,255,255,0.6)}
-
-#donationOverlay .donation-panel{display:none;animation:donationPanelIn .25s ease}
-#donationOverlay .donation-panel.active{display:block}
-@keyframes donationPanelIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
-
-#donationOverlay .donation-method-card{
-  background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.08);
-  border-radius:14px;padding:16px;display:flex;gap:12px;align-items:center;margin-bottom:10px
-}
-#donationOverlay .donation-qr-box{
-  flex-shrink:0;width:84px;height:84px;border-radius:10px;
-  border:1px solid rgba(255,255,255,0.12);background:#fff;
-  display:flex;align-items:center;justify-content:center;overflow:hidden
-}
-#donationOverlay .donation-qr-box.qr-large{width:120px;height:120px;border-radius:12px}
-#donationOverlay .donation-qr-box img{width:100%;height:100%;object-fit:cover}
-#donationOverlay .donation-qr-card{align-items:flex-start}
-#donationOverlay .donation-method-info{flex:1;min-width:0}
-#donationOverlay .donation-method-name{font-weight:900;font-size:.88rem;color:#f0ede8;margin-bottom:2px;font-family:'Nunito',sans-serif}
-#donationOverlay .donation-method-detail{font-weight:700;font-size:.8rem;color:rgba(255,255,255,0.55);word-break:break-all;margin-bottom:2px;font-family:'Nunito',sans-serif}
-#donationOverlay .donation-copy-target{cursor:pointer;transition:color .15s}
-#donationOverlay .donation-copy-target.highlight{color:#f4c542}
-#donationOverlay .donation-copy-icon.highlight{opacity:1;color:#f4c542}
-@media(hover:hover){
-  #donationOverlay .donation-copy-target:hover{color:#f4c542}
-  #donationOverlay .donation-copy-target:hover~.donation-copy-icon,
-  #donationOverlay .donation-copy-icon:hover{opacity:1;color:#f4c542}
-}
-#donationOverlay .donation-copy-icon{opacity:.4;transition:opacity .15s,color .15s}
-
-#donationOverlay .donation-btn-row{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;align-items:center}
-#donationOverlay .donation-open-btn{
-  margin-top:4px;border:1px solid rgba(255,255,255,0.1);background:transparent;
-  color:rgba(255,255,255,0.5);font-weight:700;font-size:.72rem;
-  padding:6px 12px;border-radius:20px;cursor:pointer;
-  font-family:'Nunito',sans-serif;transition:all .2s ease;min-height:36px;
-  text-decoration:none;text-align:center
-}
-#donationOverlay .donation-open-btn:hover{border-color:rgba(255,255,255,0.3);color:rgba(255,255,255,0.8)}
-#donationOverlay .donation-open-btn:active{transform:scale(.96)}
-
-#donationOverlay .donation-deeplink-note{font-size:.65rem;color:rgba(255,255,255,0.25);margin-top:6px;line-height:1.45;font-family:'Nunito',sans-serif}
-
-#donationOverlay .donation-bubbles{
-  position:absolute;top:8px;left:0;right:0;
-  display:flex;justify-content:space-around;pointer-events:none
-}
-#donationOverlay .donation-bubble{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,0.5);animation:donationFloatUp 4s ease-in infinite}
-@keyframes donationFloatUp{0%{transform:translateY(0);opacity:0}20%{opacity:1}100%{transform:translateY(-56px);opacity:0}}
-
-@media(max-width:380px){
-  #donationOverlay .donation-tiers{grid-template-columns:repeat(2,1fr);gap:6px}
-  #donationOverlay .donation-tier{padding:14px 6px;border-radius:12px}
-  #donationOverlay .donation-tier .d-emoji{font-size:1.2rem}
-  #donationOverlay .donation-tier .d-label{font-size:.72rem}
-  #donationOverlay .donation-tier .d-price{font-size:.85rem}
-  #donationOverlay .donation-btn-row{flex-wrap:nowrap}
-  #donationOverlay .donation-open-btn{font-size:.64rem;padding:5px 8px;white-space:nowrap}
-  #donationOverlay .donation-method-card{flex-direction:column;align-items:flex-start}
-}
-.build-mode-switch{display:flex;gap:0;margin-bottom:24px;border-radius:10px;overflow:hidden;border:1px solid rgba(255,255,255,0.1);background:#0d0d0d}
-.bm-btn{flex:1;padding:11px 16px;font-size:.75rem;font-weight:400;color:rgba(255,255,255,0.45);cursor:pointer;background:transparent;transition:all .25s;font-family:inherit;border:none;border-right:1px solid rgba(255,255,255,0.07);text-align:center}
-.bm-btn:last-child{border-right:none}
-.bm-btn.active{background:rgba(255,255,255,0.08);color:#fff}
-.bm-btn:hover:not(.active){color:rgba(255,255,255,0.7);background:rgba(255,255,255,0.03)}
-.release-note{font-size:.7rem;color:rgba(255,255,255,0.4);padding:10px 12px;background:rgba(255,255,255,0.03);border-left:2px solid rgba(255,255,255,0.1);border-radius:0 8px 8px 0;margin-bottom:14px;line-height:1.6}
-.release-note b{color:rgba(255,255,255,0.65)}
-.release-panel{margin-top:16px;padding:16px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.07);border-radius:10px;animation:fadeUp .3s ease both}
-.release-panel-title{font-size:.68rem;text-transform:uppercase;letter-spacing:1.2px;color:rgba(255,255,255,0.35);margin-bottom:12px}
-.dl-artifact{display:flex;flex-direction:column;gap:8px}
-.dl-artifact a{display:flex;align-items:center;padding:12px 18px;background:rgba(255,255,255,0.05);color:#ccc;border:1px solid rgba(255,255,255,0.1);border-radius:10px;font-weight:600;text-decoration:none;font-size:.82rem;transition:all .25s;gap:10px}
-.dl-artifact a:hover{background:rgba(255,255,255,0.09);border-color:rgba(255,255,255,0.2)}
-.kind-badge{font-size:.62rem;padding:2px 7px;border-radius:4px;font-weight:700;margin-left:auto;flex-shrink:0}
-.kind-aab{background:rgba(100,200,120,0.12);color:#7dc;border:1px solid rgba(100,200,120,0.2)}
-.kind-apk{background:rgba(120,150,255,0.1);color:#aad;border:1px solid rgba(120,150,255,0.2)}
 </style>
-<script>
-// Donation overlay functions
-function donationSwitchTab(btn,tab){
-  var tabs=document.querySelectorAll('#donationOverlay .donation-tab-btn');
-  var panels=document.querySelectorAll('#donationOverlay .donation-panel');
-  for(var i=0;i<tabs.length;i++)tabs[i].classList.remove('active');
-  for(var i=0;i<panels.length;i++)panels[i].classList.remove('active');
-  btn.classList.add('active');
-  document.getElementById('donation-panel-'+tab).classList.add('active');
-}
-function copyBinanceId(){
-  var span=document.querySelector('#donation-panel-binance .donation-copy-target');
-  var icon=document.querySelector('#donation-panel-binance .donation-copy-icon');
-  navigator.clipboard.writeText('60362410').then(function(){
-    span.classList.add('highlight');icon.classList.add('highlight');
-    setTimeout(function(){span.classList.remove('highlight');icon.classList.remove('highlight')},800);
-  });
-}
-async function downloadQR(type){
-  var btn=document.getElementById(type==='instapay'?'dlQrBtn':'dlBinanceQrBtn');
-  var sel=type==='instapay'?'#donation-panel-instapay':'#donation-panel-binance';
-  btn.textContent='Downloading...';btn.disabled=true;
-  try{
-    var img=document.querySelector(sel+' .donation-qr-box img');
-    var r=await fetch(img.src);
-    var blob=await r.blob();
-    var url=URL.createObjectURL(blob);
-    var a=document.createElement('a');
-    a.href=url;a.download=type+'.png';document.body.appendChild(a);
-    a.click();a.remove();
-    setTimeout(function(){URL.revokeObjectURL(url)},1000);
-    btn.textContent='Download QR';btn.disabled=false;
-    if(type==='instapay'){
-      localStorage.setItem('qrDownloaded','1');
-      var op=document.getElementById('openGcashBtn');
-      if(op)op.style.display='inline-block';
-    }
-  }catch(e){
-    btn.textContent='Download QR';btn.disabled=false;
-  }
-}
-// Show GCash button if previously downloaded
-if(localStorage.getItem('qrDownloaded')){
-  setTimeout(function(){
-    var op=document.getElementById('openGcashBtn');
-    if(op)op.style.display='inline-block';
-  },100);
-}
-// Escape closes donation overlay
-document.addEventListener('keydown',function(e){
-  if(e.key==='Escape'){
-    var o=document.getElementById('donationOverlay');
-    if(o&&o.classList.contains('open')){o.classList.remove('open');document.body.style.overflow=''}
-  }
-});
-</script>
 </head>
 <body>
 <svg xmlns="http://www.w3.org/2000/svg" style="display:none">
@@ -479,25 +290,19 @@ document.addEventListener('keydown',function(e){
 </svg>
 <div class="wrap">
 <div class="hero">
-  <h1>H2APK</h1>
+  <h1>Skulx</h1>
   <p>Convert HTML or a website URL into an Android APK in seconds.</p>
-  <p style="margin-top:12px;font-size:.7rem;display:inline-flex;align-items:center;gap:14px">
-    <a href="https://github.com/HashShin/H2APK" target="_blank" style="color:rgba(255,255,255,0.35);text-decoration:none;transition:color .25s;display:flex;align-items:center;gap:5px" onmouseenter="this.style.color='rgba(255,255,255,0.7)'" onmouseleave="this.style.color='rgba(255,255,255,0.35)'"><svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor" style="display:block;flex-shrink:0;position:relative;top:1px"><path d="M10,0C4.477,0,0,4.477,0,10c0,4.418,2.865,8.166,6.839,9.489c0.5,0.093,0.682-0.217,0.682-0.482c0-0.237-0.009-0.866-0.014-1.699c-2.782,0.602-3.369-1.34-3.369-1.34c-0.455-1.157-1.11-1.465-1.11-1.465c-0.908-0.62,0.069-0.608,0.069-0.608c1.003,0.07,1.531,1.03,1.531,1.03c0.891,1.528,2.338,1.087,2.907,0.831c0.091-0.646,0.349-1.087,0.635-1.337c-2.22-0.251-4.555-1.11-4.555-4.943c0-1.091,0.39-1.984,1.029-2.683c-0.103-0.253-0.446-1.27,0.098-2.647c0,0,0.84-0.269,2.75,1.026A9.564,9.564,0,0,1,10,4.844c0.85,0.004,1.705,0.115,2.504,0.337c1.909-1.295,2.747-1.026,2.747-1.026c0.546,1.377,0.202,2.394,0.1,2.647c0.64,0.699,1.028,1.592,1.028,2.683c0,3.842-2.339,4.687-4.566,4.935c0.359,0.309,0.678,0.919,0.678,1.852c0,1.336-0.012,2.415-0.012,2.741c0,0.267,0.18,0.579,0.688,0.481C17.137,18.161,20,14.416,20,10C20,4.477,15.523,0,10,0"/></svg>GitHub</a>
-    <a href="#" onclick="document.getElementById('donationOverlay').classList.add('open');document.body.style.overflow='hidden';return false" style="color:rgba(255,255,255,0.35);text-decoration:none;transition:color .25s;display:flex;align-items:center;gap:5px" onmouseenter="this.style.color='rgba(255,255,255,0.7)'" onmouseleave="this.style.color='rgba(255,255,255,0.35)'"><svg width="14" height="14" viewBox="0 0 64 64" fill="currentColor" style="display:block;flex-shrink:0"><path d="M4,60c0,2.211,1.789,4,4,4h20V36H4V60z M36,64h20c2.211,0,4-1.789,4-4V36H36V64z M60,12h-8c0-6.629-5.371-12-12-12c-3.086,0-5.875,1.199-8,3.113C29.875,1.199,27.086,0,24,0c-6.629,0-12,5.371-12,12H4c-2.211,0-4,1.789-4,4v8c0,2.211,1.789,4,4,4h24V12h-8c0-2.211,1.789-4,4-4s4,1.789,4,4h8c0-2.211,1.789-4,4-4s4,1.789,4,4h-8v16h24c2.211,0,4-1.789,4-4v-8C64,13.789,62.211,12,60,12z"/></svg>Support</a>
-  </p>
 </div>
 
-<div class="build-mode-switch">
-  <button class="bm-btn active" id="bmDebug" onclick="switchBuildMode('debug')">Debug / Test</button>
-  <button class="bm-btn" id="bmRelease" onclick="switchBuildMode('release')">Play Store Release</button>
+<div class="stepper">
+  <button class="step-dot active" data-step="1" onclick="goToStep(1)"><span class="step-num">1</span><span class="step-label">App</span></button>
+  <div class="step-line"></div>
+  <button class="step-dot" data-step="2" onclick="goToStep(2)"><span class="step-num">2</span><span class="step-label">Source</span></button>
+  <div class="step-line"></div>
+  <button class="step-dot" data-step="3" onclick="goToStep(3)"><span class="step-num">3</span><span class="step-label">Build</span></button>
 </div>
 
-<div class="mode-tabs">
-  <div class="mode-tab active" id="tabHtml" onclick="switchMode('html')">HTML</div>
-  <div class="mode-tab" id="tabUrl" onclick="switchMode('url')">Website URL</div>
-  <div class="mode-tab" id="tabUpload" onclick="switchMode('upload')">Upload</div>
-</div>
-
+<div class="step-panel" id="stepPanel1">
 <div class="section">
   <div class="section-title">App Details</div>
   <div class="app-details-grid">
@@ -513,33 +318,6 @@ document.addEventListener('keydown',function(e){
       <input type="file" id="iconFile" accept="image/png" onchange="previewIcon(this)">
     </div>
   </div>
-  <div id="releasePanel" class="release-panel hidden">
-    <div class="release-panel-title">Play Store Release Settings</div>
-    <div class="release-note">Release builds produce a signed <b>.aab</b> for Play Console upload + a <b>-release.apk</b> for sideload testing.</div>
-    <div style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:14px">
-      <div style="flex:1 1 120px"><label>Version Code <span style="color:#ff5f57">*</span></label><input type="number" id="versionCode" value="1" min="1" step="1" placeholder="1"></div>
-      <div style="flex:1 1 80px"><label>Min SDK</label><input type="number" id="minSdk" value="24" min="16" step="1"></div>
-      <div style="flex:1 1 80px"><label>Target SDK</label><input type="number" id="targetSdk" value="34" min="16" step="1"></div>
-    </div>
-    <div style="margin-bottom:12px">
-      <label>Keystore (.jks/.keystore file or base64) <span style="color:#ff5f57">*</span></label>
-      <div style="display:flex;gap:4px;margin-top:4px">
-        <button type="button" id="rlKsFileBtn" onclick="toggleRlKsMode('file')" style="padding:4px 10px;border-radius:6px;font-size:.68rem;font-family:inherit;cursor:pointer;background:rgba(255,255,255,0.1);color:#fff;border:1px solid rgba(255,255,255,0.2)">File</button>
-        <button type="button" id="rlKsPasteBtn" onclick="toggleRlKsMode('paste')" style="padding:4px 10px;border-radius:6px;font-size:.68rem;font-family:inherit;cursor:pointer;background:transparent;color:rgba(255,255,255,0.4);border:1px solid rgba(255,255,255,0.08)">Paste base64</button>
-      </div>
-      <input type="file" id="rlKeystoreFile" accept=".jks,.keystore" onchange="loadRlKeystore(this)" style="margin-top:6px;color:rgba(255,255,255,0.5);font-size:.7rem">
-      <textarea id="rlKeystoreText" placeholder="Paste base64-encoded keystore here..." style="display:none;margin-top:6px;min-height:80px;font-size:.68rem" oninput="rlKeystoreBase64=this.value.trim()"></textarea>
-    </div>
-    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px">
-      <div style="flex:1 1 120px"><label>Keystore password <span style="color:#ff5f57">*</span></label><input type="password" id="rlKsPass" placeholder="required"></div>
-      <div style="flex:1 1 90px"><label>Key alias <span style="color:#ff5f57">*</span></label><input type="text" id="rlKeyAlias" placeholder="required"></div>
-      <div style="flex:1 1 120px"><label>Key password</label><input type="password" id="rlKeyPass" placeholder="same as keystore"></div>
-    </div>
-    <div class="check-row">
-      <span class="checkbox"><input type="checkbox" id="allowHttp"><svg><use href="#cb-30"></use></svg></span>
-      <label for="allowHttp">Allow HTTP (cleartext) — off by default for Play Store</label>
-    </div>
-  </div>
   <button onclick="document.getElementById('advancedOpts').classList.toggle('hidden');this.textContent=this.textContent==='+ Advanced'?'- Advanced':'+ Advanced'" style="margin-top:14px;padding:4px 10px;background:transparent;border:1px solid rgba(255,255,255,0.08);border-radius:6px;color:rgba(255,255,255,0.35);font-size:.7rem;cursor:pointer;font-family:inherit;transition:all .25s"
     onmouseenter="this.style.borderColor='rgba(255,255,255,0.2)';this.style.color='rgba(255,255,255,0.7)'"
     onmouseleave="this.style.borderColor='rgba(255,255,255,0.08)';this.style.color='rgba(255,255,255,0.35)'">+ Advanced</button>
@@ -550,7 +328,7 @@ document.addEventListener('keydown',function(e){
       <input type="text" id="themeHex" value="#1C1C1E" oninput="var c=this.value;if(/^#[0-9a-f]{6}$/i.test(c)){document.getElementById('themeColor').value=c;applyThemeColor(c)}" style="width:90px;background:#000;border:1px solid rgba(255,255,255,0.08);border-radius:6px;color:rgba(255,255,255,0.8);padding:8px 10px;font-size:.72rem;font-family:inherit">
     </div>
     <div class="check-row">
-      <span class="checkbox"><input type="checkbox" id="pullRefresh"><svg><use href="#cb-30"></use></svg></span>
+      <span class="checkbox"><input type="checkbox" id="pullRefresh" checked><svg><use href="#cb-30"></use></svg></span>
       <label for="pullRefresh">Pull-Down Refresh</label>
     </div>
     <div class="check-row">
@@ -610,13 +388,41 @@ document.addEventListener('keydown',function(e){
         <input type="file" id="splashImageFile" accept="image/png" onchange="previewSplash(this)" style="display:none;margin-top:8px;color:rgba(255,255,255,0.5);font-size:.7rem">
       </div>
     </div>
+    <div class="check-row">
+      <span class="checkbox"><input type="checkbox" id="releaseSign" onchange="document.getElementById('signOpts').classList.toggle('hidden',!this.checked)"><svg><use href="#cb-30"></use></svg></span>
+      <label for="releaseSign">Release signing (custom keystore)</label>
+    </div>
+    <div id="signOpts" class="hidden" style="margin-top:6px;padding:12px;background:rgba(255,255,255,0.03);border-radius:8px;overflow:hidden">
+      <div style="margin-bottom:10px">
+        <label>Keystore (.jks/.keystore file or base64)</label>
+        <div style="display:flex;gap:4px;margin-top:4px">
+          <button type="button" id="ksFileBtn" onclick="toggleKeystoreMode('file')" style="padding:4px 10px;border-radius:6px;font-size:.68rem;font-family:inherit;cursor:pointer;background:rgba(255,255,255,0.1);color:#fff;border:1px solid rgba(255,255,255,0.2)">File</button>
+          <button type="button" id="ksPasteBtn" onclick="toggleKeystoreMode('paste')" style="padding:4px 10px;border-radius:6px;font-size:.68rem;font-family:inherit;cursor:pointer;background:transparent;color:rgba(255,255,255,0.4);border:1px solid rgba(255,255,255,0.08)">Paste base64</button>
+        </div>
+        <input type="file" id="keystoreFile" accept=".jks,.keystore" onchange="loadKeystore(this)" style="margin-top:6px;color:rgba(255,255,255,0.5);font-size:.7rem">
+        <textarea id="keystoreText" placeholder="Paste base64-encoded keystore here..." style="display:none;margin-top:6px;min-height:80px;font-size:.68rem" oninput="keystoreBase64=this.value.trim()"></textarea>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px">
+        <div style="flex:1 1 120px"><label>Keystore password *</label><input type="password" id="ksPass" placeholder="required"></div>
+        <div style="flex:1 1 90px"><label>Key alias *</label><input type="text" id="keyAlias" placeholder="required"></div>
+        <div style="flex:1 1 120px"><label>Key password</label><input type="password" id="keyPass" placeholder="defaults to keystore password"></div>
+      </div>
+    </div>
   </div>
 </div>
+<div class="step-nav"><span></span><button class="step-btn" onclick="goToStep(2)">Next</button></div>
+</div>
 
+<div class="step-panel hidden" id="stepPanel2">
+<div class="mode-tabs">
+  <div class="mode-tab active" id="tabHtml" onclick="switchMode('html')">HTML</div>
+  <div class="mode-tab" id="tabUrl" onclick="switchMode('url')">Website URL</div>
+  <div class="mode-tab" id="tabUpload" onclick="switchMode('upload')">Upload</div>
+</div>
 <div id="htmlSection">
   <div class="section">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">
-      <span style="font-size:.75rem;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,0.55);font-weight:400">HTML Content</span>
+      <span style="font-family:'Space Grotesk',sans-serif;font-size:.72rem;text-transform:uppercase;letter-spacing:2px;color:#fff;font-weight:700">HTML Content</span>
       <button onclick="preview()" class="preview-btn">Preview</button>
     </div>
     <textarea id="html" placeholder="<h1>Hello World</h1>
@@ -657,98 +463,19 @@ document.addEventListener('keydown',function(e){
   <input type="file" id="projectFiles" accept="text/html,text/css,text/javascript,application/javascript,application/json,text/json,text/plain,image/*,application/zip,.html,.htm,.css,.js,.mjs,.json,.txt,.xml,.csv,.png,.jpg,.jpeg,.gif,.svg,.webp,.bmp,.avif,.ico,.zip" multiple onchange="handleFiles(this)" style="display:none">
   <div id="fileList" style="margin-top:12px;font-size:.75rem;color:rgba(255,255,255,0.45)"></div>
 </div>
+<div class="step-nav"><button class="step-btn ghost" onclick="goToStep(1)">Back</button><button class="step-btn" onclick="goToStep(3)">Next</button></div>
+</div>
 
+<div class="step-panel hidden" id="stepPanel3">
 <button class="build-btn" id="btn" onclick="build()">Build APK</button>
 
 <div id="status"></div>
 <div id="logHeader"><div class="term-chrome"><span class="tc-r"></span><span class="tc-y"></span><span class="tc-g"></span></div></div>
 <div id="log"></div>
 <div class="dl-box" id="dl"></div>
-
+<div class="step-nav"><button class="step-btn ghost" onclick="goToStep(2)">Back</button><span></span></div>
 </div>
 
-<!-- DONATION OVERLAY -->
-<div id="donationOverlay" onclick="if(event.target===this){this.classList.remove('open');document.body.style.overflow=''}">
-<div class="donation-wrap">
-<div class="donation-hero">
-  <button class="donation-close" onclick="document.getElementById('donationOverlay').classList.remove('open');document.body.style.overflow=''">×</button>
-  <div class="donation-bubbles">
-    <span class="donation-bubble" style="animation-delay:0s"></span>
-    <span class="donation-bubble" style="animation-delay:1s"></span>
-    <span class="donation-bubble" style="animation-delay:2s"></span>
-    <span class="donation-bubble" style="animation-delay:.5s"></span>
-    <span class="donation-bubble" style="animation-delay:1.5s"></span>
-  </div>
-  <svg class="donation-mug" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="animation:donationClink 3.5s ease-in-out infinite">
-    <rect x="18" y="30" width="50" height="55" rx="6" fill="#f4c542" stroke="#3a1f0f" stroke-width="3"/>
-    <rect x="18" y="30" width="50" height="14" fill="#fff9ee" opacity="0.9"/>
-    <path d="M68 40 q22 -4 22 16 q0 20 -22 16" fill="none" stroke="#3a1f0f" stroke-width="4" stroke-linecap="round"/>
-    <circle cx="30" cy="24" r="5" fill="#fff9ee"/>
-    <circle cx="42" cy="20" r="6" fill="#fff9ee"/>
-    <circle cx="54" cy="25" r="4.5" fill="#fff9ee"/>
-    <line x1="26" y1="55" x2="26" y2="78" stroke="#c98a1f" stroke-width="2" opacity="0.6" stroke-linecap="round"/>
-    <line x1="38" y1="52" x2="38" y2="78" stroke="#c98a1f" stroke-width="2" opacity="0.6" stroke-linecap="round"/>
-  </svg>
-  <div class="donation-brand">Buy HASH a Beer</div>
-  <div class="donation-sub">Fuel more late-night builds</div>
-</div>
-
-<div class="donation-body">
-  <p class="donation-pitch">If my work helped you out, buy me a beer if you feel like it — no pressure.</p>
-
-  <div class="donation-tabs">
-    <button class="donation-tab-btn active" onclick="donationSwitchTab(this,'instapay')">InstaPay</button>
-    <button class="donation-tab-btn" onclick="donationSwitchTab(this,'binance')">Binance</button>
-    <button class="donation-tab-btn" onclick="donationSwitchTab(this,'github')">GitHub</button>
-  </div>
-
-  <div class="donation-panel active" id="donation-panel-instapay">
-    <div class="donation-method-card donation-qr-card">
-      <div class="donation-qr-box qr-large">
-        <img src="instapay.png" alt="GCash QR">
-      </div>
-      <div class="donation-method-info">
-        <div class="donation-method-name">Instapay</div>
-        <div class="donation-btn-row">
-          <button class="donation-open-btn" id="dlQrBtn" onclick="downloadQR('instapay')">Download QR</button>
-          <a href="gcash://com.mynt.gcash/app/006300000700" class="donation-open-btn" id="openGcashBtn" style="text-decoration:none;display:none">Open in GCash</a>
-        </div>
-        <p class="donation-deeplink-note">Download the QR image first, then open your e-wallet app to scan the QR code.</p>
-      </div>
-    </div>
-  </div>
-
-  <div class="donation-panel" id="donation-panel-binance">
-    <div class="donation-method-card donation-qr-card">
-      <div class="donation-qr-box qr-large">
-        <img src="binance.png" alt="Binance QR">
-      </div>
-      <div class="donation-method-info">
-        <div class="donation-method-name">Binance Pay</div>
-        <div class="donation-method-detail">
-          Pay ID: <span class="donation-copy-target" onclick="copyBinanceId()">60362410</span>
-          <svg class="donation-copy-icon" onclick="copyBinanceId()" viewBox="0 -0.5 25 25" width="14" height="14" fill="currentColor" style="cursor:pointer;vertical-align:middle;margin-left:1px">
-            <path d="M8.25005 8.5C8.25005 8.91421 8.58584 9.25 9.00005 9.25C9.41426 9.25 9.75005 8.91421 9.75005 8.5H8.25005ZM9.00005 8.267H9.75006L9.75004 8.26283L9.00005 8.267ZM9.93892 5.96432L10.4722 6.49171L9.93892 5.96432ZM12.2311 5V4.24999L12.2269 4.25001L12.2311 5ZM16.269 5L16.2732 4.25H16.269V5ZM18.5612 5.96432L18.0279 6.49171V6.49171L18.5612 5.96432ZM19.5 8.267L18.75 8.26283V8.267H19.5ZM19.5 12.233H18.75L18.7501 12.2372L19.5 12.233ZM18.5612 14.5357L18.0279 14.0083L18.5612 14.5357ZM16.269 15.5V16.25L16.2732 16.25L16.269 15.5ZM16 14.75C15.5858 14.75 15.25 15.0858 15.25 15.5C15.25 15.9142 15.5858 16.25 16 16.25V14.75ZM9.00005 9.25C9.41426 9.25 9.75005 8.91421 9.75005 8.5C9.75005 8.08579 9.41426 7.75 9.00005 7.75V9.25ZM8.73105 8.5V7.74999L8.72691 7.75001L8.73105 8.5ZM6.43892 9.46432L6.97218 9.99171L6.43892 9.46432ZM5.50005 11.767H6.25006L6.25004 11.7628L5.50005 11.767ZM5.50005 15.734L6.25005 15.7379V15.734H5.50005ZM8.73105 19L8.72691 19.75H8.73105V19ZM12.769 19V19.75L12.7732 19.75L12.769 19ZM15.0612 18.0357L14.5279 17.5083L15.0612 18.0357ZM16 15.733H15.25L15.2501 15.7372L16 15.733ZM16.75 15.5C16.75 15.0858 16.4143 14.75 16 14.75C15.5858 14.75 15.25 15.0858 15.25 15.5H16.75ZM9.00005 7.75C8.58584 7.75 8.25005 8.08579 8.25005 8.5C8.25005 8.91421 8.58584 9.25 9.00005 9.25V7.75ZM12.7691 8.5L12.7732 7.75H12.7691V8.5ZM15.0612 9.46432L15.5944 8.93694V8.93694L15.0612 9.46432ZM16.0001 11.767L15.2501 11.7628V11.767H16.0001ZM15.2501 15.5C15.2501 15.9142 15.5858 16.25 16.0001 16.25C16.4143 16.25 16.7501 15.9142 16.7501 15.5H15.2501ZM9.75005 8.5V8.267H8.25005V8.5H9.75005ZM9.75004 8.26283C9.74636 7.60005 10.0061 6.96296 10.4722 6.49171L9.40566 5.43694C8.65985 6.19106 8.24417 7.21056 8.25006 8.27117L9.75004 8.26283ZM10.4722 6.49171C10.9382 6.02046 11.5724 5.75365 12.2352 5.74999L12.2269 4.25001C11.1663 4.25587 10.1515 4.68282 9.40566 5.43694L10.4722 6.49171ZM12.2311 5.75H16.269V4.25H12.2311V5.75ZM16.2649 5.74999C16.9277 5.75365 17.5619 6.02046 18.0279 6.49171L19.0944 5.43694C18.3486 4.68282 17.3338 4.25587 16.2732 4.25001L16.2649 5.74999ZM18.0279 6.49171C18.494 6.96296 18.7537 7.60005 18.7501 8.26283L20.25 8.27117C20.2559 7.21056 19.8402 6.19106 19.0944 5.43694L18.0279 6.49171ZM18.75 8.267V12.233H20.25V8.267H18.75ZM18.7501 12.2372C18.7537 12.8999 18.494 13.537 18.0279 14.0083L19.0944 15.0631C19.8402 14.3089 20.2559 13.2894 20.25 12.2288L18.7501 12.2372ZM18.0279 14.0083C17.5619 14.4795 16.9277 14.7463 16.2649 14.75L16.2732 16.25C17.3338 16.2441 18.3486 15.8172 19.0944 15.0631L18.0279 14.0083ZM16.269 14.75H16V16.25H16.269V14.75ZM9.00005 7.75H8.73105V9.25H9.00005V7.75ZM8.72691 7.75001C7.6663 7.75587 6.65146 8.18282 5.90566 8.93694L6.97218 9.99171C7.43824 9.52046 8.07241 9.25365 8.73519 9.24999L8.72691 7.75001ZM5.90566 8.93694C5.15985 9.69106 4.74417 10.7106 4.75006 11.7712L6.25004 11.7628C6.24636 11.1001 6.50612 10.463 6.97218 9.99171L5.90566 8.93694ZM4.75005 11.767V15.734H6.25005V11.767H4.75005ZM4.75006 15.7301C4.73847 17.9382 6.51879 19.7378 8.72691 19.75L8.7352 18.25C7.35533 18.2424 6.2428 17.1178 6.25004 15.7379L4.75006 15.7301ZM8.73105 19.75H12.769V18.25H8.73105V19.75ZM12.7732 19.75C13.8338 19.7441 14.8486 19.3172 15.5944 18.5631L14.5279 17.5083C14.0619 17.9795 13.4277 18.2463 12.7649 18.25L12.7732 19.75ZM15.5944 18.5631C16.3402 17.8089 16.7559 16.7894 16.75 15.7288L15.2501 15.7372C15.2537 16.3999 14.994 17.037 14.5279 17.5083L15.5944 18.5631ZM16.75 15.733V15.5H15.25V15.733H16.75ZM9.00005 9.25H12.7691V7.75H9.00005V9.25ZM12.7649 9.24999C13.4277 9.25365 14.0619 9.52046 14.5279 9.99171L15.5944 8.93694C14.8486 8.18282 13.8338 7.75587 12.7732 7.75001L12.7649 9.24999ZM14.5279 9.99171C14.994 10.463 15.2537 11.1001 15.2501 11.7628L16.75 11.7712C16.7559 10.7106 16.3402 9.69106 15.5944 8.93694L14.5279 9.99171ZM15.2501 11.767V15.5H16.7501V11.767H15.2501Z"/>
-          </svg>
-        </div>
-        <div class="donation-btn-row">
-          <a href="#" class="donation-open-btn" id="dlBinanceQrBtn" style="text-decoration:none" onclick="downloadQR('binance');return false">Download QR</a>
-        </div>
-        <p class="donation-deeplink-note">Scan the QR or search the Pay ID in the Binance app. Accepts USDT, BTC, ETH.</p>
-      </div>
-    </div>
-  </div>
-
-  <div class="donation-panel" id="donation-panel-github">
-    <div class="donation-method-card" style="text-align:center;padding:24px 16px;">
-      <div class="donation-method-name" style="margin-bottom:8px;">GitHub Sponsors</div>
-      <p class="donation-deeplink-note" style="margin-bottom:16px;">Support this project directly through GitHub Sponsors.</p>
-      <a href="https://github.com/sponsors/HashShin" target="_blank" rel="noopener" class="donation-open-btn" style="text-decoration:none;display:inline-block;">Sponsor on GitHub</a>
-    </div>
-  </div>
-
-</div>
-</div>
 </div>
 
 <div id="previewPane">
@@ -764,11 +491,19 @@ document.addEventListener('keydown',function(e){
 
 <script>
 let iconBase64='';
+let currentStep=1;
+function goToStep(n){
+  currentStep=n;
+  for(let i=1;i<=3;i++){
+    document.getElementById('stepPanel'+i).classList.toggle('hidden', i!==n);
+    var dot=document.querySelector('.step-dot[data-step="'+i+'"]');
+    dot.classList.toggle('active', i===n);
+    dot.classList.toggle('done', i<n);
+  }
+  window.scrollTo({top:0,behavior:'smooth'});
+}
 let keystoreBase64='';
-let rlKeystoreBase64='';
 let currentMode='html';
-let buildMode='debug';
-let rlKsMode='file';
 let uploadedFiles={};
 let uploadedImages={};
 
@@ -777,9 +512,23 @@ function previewIcon(input){
   if(!f){p.className='icon-preview';p.innerHTML='<span class="empty">icon</span>';iconBase64='';return}
   const reader=new FileReader();
   reader.onload=function(){
-    p.className='icon-preview has-icon';
-    p.innerHTML='<img src="'+reader.result+'">';
-    iconBase64=reader.result.split(',')[1];
+    const img=new Image();
+    img.onload=function(){
+      const size=1024;
+      const canvas=document.createElement('canvas');
+      canvas.width=size;canvas.height=size;
+      const ctx=canvas.getContext('2d');
+      ctx.imageSmoothingEnabled=true;
+      ctx.imageSmoothingQuality='high';
+      const scale=Math.max(size/img.width,size/img.height);
+      const w=img.width*scale,h=img.height*scale;
+      ctx.drawImage(img,(size-w)/2,(size-h)/2,w,h);
+      const dataUrl=canvas.toDataURL('image/png');
+      p.className='icon-preview has-icon';
+      p.innerHTML='<img src="'+dataUrl+'">';
+      iconBase64=dataUrl.split(',')[1];
+    };
+    img.src=reader.result;
   };
   reader.readAsDataURL(f);
 }
@@ -807,36 +556,6 @@ function loadKeystore(input){
   document.getElementById('keystoreText').value='';
 }
 
-function switchBuildMode(m){
-  buildMode=m;
-  document.getElementById('bmDebug').classList.toggle('active',m==='debug');
-  document.getElementById('bmRelease').classList.toggle('active',m==='release');
-  document.getElementById('releasePanel').classList.toggle('hidden',m!=='release');
-  document.getElementById('btn').textContent=m==='release'?'Build APK + AAB':'Build APK';
-}
-
-function toggleRlKsMode(m){
-  rlKsMode=m;
-  const fb=document.getElementById('rlKsFileBtn'),pb=document.getElementById('rlKsPasteBtn');
-  fb.style.background=m==='file'?'rgba(255,255,255,0.1)':'transparent';
-  fb.style.color=m==='file'?'#fff':'rgba(255,255,255,0.4)';
-  fb.style.borderColor=m==='file'?'rgba(255,255,255,0.2)':'rgba(255,255,255,0.08)';
-  pb.style.background=m==='paste'?'rgba(255,255,255,0.1)':'transparent';
-  pb.style.color=m==='paste'?'#fff':'rgba(255,255,255,0.4)';
-  pb.style.borderColor=m==='paste'?'rgba(255,255,255,0.2)':'rgba(255,255,255,0.08)';
-  document.getElementById('rlKeystoreFile').style.display=m==='file'?'block':'none';
-  document.getElementById('rlKeystoreText').style.display=m==='paste'?'block':'none';
-}
-
-function loadRlKeystore(input){
-  const f=input.files[0];
-  if(!f){rlKeystoreBase64='';return}
-  const reader=new FileReader();
-  reader.onload=function(){rlKeystoreBase64=reader.result.split(',')[1];};
-  reader.readAsDataURL(f);
-  document.getElementById('rlKeystoreText').value='';
-}
-
 let splashImageBase64='';
 function toggleSplashUpload(){
   const fi=document.getElementById('splashImageFile');
@@ -858,9 +577,9 @@ function handleFiles(input){
   fileList=[];
   const fl=document.getElementById('fileList');
   if(!input.files.length){fl.innerHTML='';return}
-  
+
   let filePending=0;
-  
+
   for(const f of input.files){
     if(f.name.toLowerCase().endsWith('.zip')){
       filePending++;
@@ -1007,62 +726,46 @@ async function build(){
   };
   if(currentMode==='upload' && (Object.keys(uploadedImages).length || Object.keys(uploadedFiles).length)){
     body.asset_files={};
-    // Merge both uploadedFiles and uploadedImages
-    // Backend expects all asset_files values to be pure base64
     for(var k in uploadedFiles){
       if(uploadedFiles.hasOwnProperty(k)){
         var l=k.toLowerCase();
-        if(l==='index.html')continue; // handled via body.html → wrapHTML
+        if(l==='index.html')continue;
         var data=uploadedFiles[k];
-        // readAsText stores raw text — base64-encode it (btoa+encodeURIComponent handles UTF-8)
         body.asset_files[k]=btoa(unescape(encodeURIComponent(data)));
       }
     }
     for(var k in uploadedImages){
       if(uploadedImages.hasOwnProperty(k)){
         var img=uploadedImages[k];
-        // strip any data: prefix (zip images are stored as 'data:image/png;base64,...')
         if(img.indexOf(',')!==-1)img=img.split(',')[1];
         body.asset_files[k]=img;
       }
     }
     console.log('Total asset_files:', Object.keys(body.asset_files).length);
   }
-  body.build_mode=buildMode;
-  if(buildMode==='release'){
-    const vc=parseInt(document.getElementById('versionCode').value)||0;
-    if(vc<1){
+  if(document.getElementById('releaseSign').checked){
+    if(!keystoreBase64){
       st.className='failed';
-      st.innerHTML='<span class="pulse-dot"></span>Version Code must be a positive integer';
+      st.innerHTML='<span class="pulse-dot"></span>Keystore file or base64 is required';
       btn.disabled=false;
       return;
     }
-    if(!rlKeystoreBase64){
-      st.className='failed';
-      st.innerHTML='<span class="pulse-dot"></span>Keystore file or base64 is required for release';
-      btn.disabled=false;
-      return;
-    }
-    if(!document.getElementById('rlKsPass').value){
+    if(!document.getElementById('ksPass').value){
       st.className='failed';
       st.innerHTML='<span class="pulse-dot"></span>Keystore password is required';
       btn.disabled=false;
       return;
     }
-    if(!document.getElementById('rlKeyAlias').value){
+    if(!document.getElementById('keyAlias').value){
       st.className='failed';
       st.innerHTML='<span class="pulse-dot"></span>Key alias is required';
       btn.disabled=false;
       return;
     }
-    body.version_code=vc;
-    body.min_sdk=parseInt(document.getElementById('minSdk').value)||24;
-    body.target_sdk=parseInt(document.getElementById('targetSdk').value)||34;
-    body.keystore=rlKeystoreBase64;
-    body.ks_pass=document.getElementById('rlKsPass').value;
-    body.key_alias=document.getElementById('rlKeyAlias').value;
-    body.key_pass=document.getElementById('rlKeyPass').value;
-    body.allow_cleartext=document.getElementById('allowHttp').checked;
+    body.keystore=keystoreBase64;
+    body.ks_pass=document.getElementById('ksPass').value;
+    body.key_alias=document.getElementById('keyAlias').value;
+    body.key_pass=document.getElementById('keyPass').value;
   }
   if(currentMode==='html'){
     body.html=document.getElementById('html').value;
@@ -1071,15 +774,15 @@ async function build(){
   }else if(currentMode==='upload'){
     if(!uploadedFiles['index.html']){st.className='failed';st.innerHTML='<span class="pulse-dot"></span>Missing index.html';btn.disabled=false;return}
     body.html=uploadedFiles['index.html'];
-    // For upload mode with folder structure, files are sent via asset_files
-    // CSS/JS concatenation only for flat structure
     if(!body.asset_files){
       body.css='';body.js='';
       for(const name in uploadedFiles){
         const l=name.toLowerCase();
         if(l==='index.html')continue;
-        if(l.endsWith('.css'))body.css+=uploadedFiles[name]+'\n';
-        if(l.endsWith('.js'))body.js+=uploadedFiles[name]+'\n';
+        if(l.endsWith('.css'))body.css+=uploadedFiles[name]+'
+';
+        if(l.endsWith('.js'))body.js+=uploadedFiles[name]+'
+';
       }
     }
   }else{
@@ -1113,29 +816,15 @@ function streamLog(id){
   let lines=[];
   es.onmessage=function(e){
     lines.push(e.data);
-    log.innerHTML=lines.map(l=>l.replace(/</g,'&lt;').replace(/>/g,'&gt;')).join('\n');
+    log.innerHTML=lines.map(l=>l.replace(/</g,'&lt;').replace(/>/g,'&gt;')).join('
+');
     log.scrollTop=log.scrollHeight;
     window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'});
   };
   es.addEventListener('done',function(e){
     es.close();
     st.className='done';st.innerHTML='<span class="pulse-dot"></span>Build complete!';
-    let artifacts;
-    try{artifacts=JSON.parse(e.data);}catch(ex){artifacts=null;}
-    if(Array.isArray(artifacts)&&artifacts.length){
-      let h='<div class="dl-artifact">';
-      for(const a of artifacts){
-        const isAAB=a.kind==='aab';
-        const label=isAAB?'Upload to Play Console':'Test install (APK)';
-        const kindCls=isAAB?'kind-aab':'kind-apk';
-        const kindLabel=isAAB?'AAB':'APK';
-        h+='<a href="/api/download-file/'+id+'/'+a.name+'" download>'+label+' \u2014 '+a.name+'<span class="kind-badge '+kindCls+'">'+kindLabel+'</span></a>';
-      }
-      h+='</div>';
-      dl.innerHTML=h;
-    }else{
-      dl.innerHTML='<a href="/api/download/'+id+'" download>Download '+e.data+'</a>';
-    }
+    dl.innerHTML='<a href="/api/download/'+id+'" download>Download '+e.data+'</a>';
     dl.className='dl-box';dl.style.display='block';
     window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'});
     btn.disabled=false;
@@ -1148,31 +837,9 @@ function streamLog(id){
   });
   es.onerror=function(){
     es.close();
-    // Poll status once — the build may have completed even if SSE dropped.
-    fetch('/api/status/'+id).then(function(r){return r.json();}).then(function(d){
-      if(d.success&&Array.isArray(d.artifacts)&&d.artifacts.length){
-        st.className='done';st.innerHTML='<span class="pulse-dot"></span>Build complete!';
-        let h='<div class="dl-artifact">';
-        for(const a of d.artifacts){
-          const isAAB=a.kind==='aab';
-          const label=isAAB?'Upload to Play Console':'Test install (APK)';
-          const kindCls=isAAB?'kind-aab':'kind-apk';
-          const kindLabel=isAAB?'AAB':'APK';
-          h+='<a href="/api/download-file/'+id+'/'+a.name+'" download>'+label+' \u2014 '+a.name+'<span class="kind-badge '+kindCls+'">'+kindLabel+'</span></a>';
-        }
-        h+='</div>';
-        dl.innerHTML=h;
-        dl.className='dl-box';dl.style.display='block';
-      } else {
-        st.className='failed';st.innerHTML='<span class="pulse-dot"></span>Connection lost';
-      }
-      window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'});
-      btn.disabled=false;
-    }).catch(function(){
-      st.className='failed';st.innerHTML='<span class="pulse-dot"></span>Connection lost';
-      window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'});
-      btn.disabled=false;
-    });
+    st.className='failed';st.innerHTML='<span class="pulse-dot"></span>Connection lost';
+    window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'});
+    btn.disabled=false;
   };
 }
 
